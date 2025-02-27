@@ -35,6 +35,16 @@ def generate_content(llm, topic):
         verbose = True
     )
     
+    write = Task(
+        description = """1. Use the content plan to craft a compelling blog post on {topic}. 
+        2. Incorporate SEO keywords naturally. 
+        3. Sections/Subtitles are properly named in an engaging manner. 
+        4. Ensure the post is structured with an engaging introduction, insightful body, and a summarizing conclusion. 
+        5. Proofread for grammatical errors and alignment with the brand's voice.""",
+        expected_output = "A well-written blog post in markdown format, ready for publication, each section should have 2 or 3 paragraphs.",
+        agent = writer,
+    )
+    
     editor = Agent(
         role = "Editor",
         goal = "Edit a given blog post to align with the writing style of the organization.",
@@ -46,6 +56,20 @@ def generate_content(llm, topic):
         allow_delegation = False,
         verbose = True
     )
+    
+    edit = Task(
+        description = "Proofread the given blog post for grammatical errors and alignment with the brand's voice.",
+        expected_output = "A well-written blog post in markdown format, ready for publication, each section should have 2 or 3 paragraphs.",
+        agent = editor
+    )
+    
+    crew = Crew(
+        agents = [planner, writer, editor],
+        tasks = [plan, write, edit],
+        verbose = True
+    )
+    
+    return crew.kickoff(inputs={"topic": topic})
     
     
     
