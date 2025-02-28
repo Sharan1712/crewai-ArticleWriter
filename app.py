@@ -10,12 +10,36 @@ load_dotenv()
 # Streamlit Page Config
 st.set_page_config(page_title = "AI Blog Writer", page_icon = ":newspaper:", layout = "wide")
 
+
+def initialize_session_state():
+    
+    if 'api_configured' not in st.session_state:
+        st.session_state.api_configured = False
+        
+initialize_session_state()
+
 # Title and description
 st.title("🤖 AI Blog Article Generator, powered by CrewAI")
 st.markdown("Generate comprehensive blog posts about any topic using AI agents.")
 
 # Sidebar
 with st.sidebar:
+    st.header("Model API Configuration")
+    
+    model_options = [
+        "GPT-4o mini",
+        "GPT-4o",
+        "o1",
+        "o3-mini",
+        "Deepseek-V3",
+        "Deepseek-r1",
+        "LLaMa 3.3 70B",
+        "DeepSeek R1 Distill",
+        "Mistral 7B v0.3"
+    ]
+    
+    selected_model = st.selectbox("Select which LLM to use", model_options, key = "selected_model")
+    
     st.header("Content Settings")
     
     # Make the text input take up more space
@@ -56,5 +80,9 @@ if generate_button:
             st.error(f"An error occurred: {str(e)}")
             
 # Footer
-st.markdown("---")
-st.markdown("Built with CrewAI, Streamlit and powered by OpenAI's GPT4o")
+# footer_html = """<div style='text-align: center;'>
+#   <p>Developed with CrewAI, Streamlit and OpenAI by Sharan</p>
+# </div>"""
+# st.markdown(footer_html, unsafe_allow_html=True)
+
+# st.markdown("Built with CrewAI, Streamlit and powered by OpenAI's GPT4o")
