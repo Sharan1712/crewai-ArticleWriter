@@ -1,6 +1,9 @@
-from crewai import Agent, Task, Crew, LLM
+from crewai import Agent, Task, Crew
+from crewai_tools import SerperDevTool
 
 def generate_content(llm, topic):
+    
+    search_tool = SerperDevTool(n_results=10)
     
     planner = Agent(
         role = "Content Planner",
@@ -10,7 +13,8 @@ def generate_content(llm, topic):
         Your work is the basis for the Content Writer to write an article on this topic.""",
         llm = llm,
         allow_delegation = False,
-	    verbose = True
+	    verbose = True,
+        tools = [search_tool]
     )
     
     plan = Task(
