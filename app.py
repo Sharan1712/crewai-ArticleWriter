@@ -27,15 +27,10 @@ with st.sidebar:
     st.header("Model API Configuration")
     
     model_options = [
-        "GPT-4o mini",
-        "GPT-4o",
+        "gpt-4o-mini",
+        "gpt-4o",
         "o1",
-        "o3-mini",
-        "Deepseek-V3",
-        "Deepseek-r1",
-        "LLaMa 3.3 70B",
-        "DeepSeek R1 Distill",
-        "Mistral 7B v0.3"
+        "o3-mini"
     ]
     
     selected_model = st.selectbox("Select which LLM to use", model_options, key = "selected_model")
@@ -63,7 +58,7 @@ with st.sidebar:
 if generate_button:
     with st.spinner("Generating content... This may take a moment."):
         try:
-            llm = LLM(model = "openai/gpt-4o-mini")
+            llm = LLM(model = f"openai/{selected_model}")
             result = generate_content(llm, topic)
             st.markdown("### Generated Article")
             st.markdown(result)
