@@ -8,8 +8,22 @@ from agents import generate_content
 load_dotenv()
 
 # Streamlit Page Config
-st.set_page_config(page_title = "AI Blog Writer", page_icon = ":newspaper:", layout = "wide")
+st.set_page_config(
+    page_title = "AI Blog Writer", 
+    page_icon = ":newspaper:", 
+    layout = "wide",
+    initial_sidebar_state="expanded")
 
+# Logo
+st.logo(
+    "https://cdn.prod.website-files.com/66cf2bfc3ed15b02da0ca770/66d07240057721394308addd_Logo%20(1).svg",
+    link = "https://www.crewai.com/",
+    size = "large"
+)
+
+# col1, col2, col3 = st.columns([1, 2, 1])
+# with col2:
+#     st.title("🔍 :red[CrewAI] Research Assistant", anchor=False)
 
 def initialize_session_state():
     
@@ -19,21 +33,38 @@ def initialize_session_state():
 initialize_session_state()
 
 # Title and description
-st.title("🤖 AI Blog Article Generator, powered by CrewAI")
+st.title("✍️AI Blog Article Generator, powered by :red[CrewAI]")
 st.markdown("Generate comprehensive blog posts about any topic using AI agents.")
 
 # Sidebar
 with st.sidebar:
-    st.header("Model API Configuration")
+    st.markdown("### ⚙️ Model API Configuration")
+    st.write("")
     
     model_options = [
         "gpt-4o-mini",
         "gpt-4o",
         "o1",
+        "o1-mini", 
+        "o1-preview"
         "o3-mini"
     ]
     
-    selected_model = st.selectbox("Select which LLM to use", model_options, key = "selected_model")
+    selected_model = st.selectbox("🤖 Select which LLM to use", model_options, key = "selected_model")
+    
+    with st.expander("🔑 API Keys", expanded=True):
+        
+        st.info("API keys are stored temporarily in memory and cleared when you close the browser.")
+        
+        openai_api_key = st.text_input(
+            "OpenAI API Key",
+            type = "password",
+            placeholder="Enter your OpenAI API key",
+            help="Enter your OpenAI API key"
+        )
+        
+        if openai_api_key:
+            os.environ["OPENAI_API_KEY"] = openai_api_key
     
     st.header("Content Settings")
     
