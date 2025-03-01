@@ -1,11 +1,11 @@
 import os
 import streamlit as st
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 from crewai import LLM
 from agents import generate_content
 
 # Load env variables
-load_dotenv()
+# load_dotenv()
 
 # Streamlit Page Config
 st.set_page_config(
@@ -21,20 +21,11 @@ st.logo(
     size = "large"
 )
 
-# col1, col2, col3 = st.columns([1, 2, 1])
-# with col2:
-#     st.title("🔍 :red[CrewAI] Research Assistant", anchor=False)
-
-def initialize_session_state():
-    
-    if 'api_configured' not in st.session_state:
-        st.session_state.api_configured = False
-        
-initialize_session_state()
-
-# Title and description
-st.title("✍️AI Blog Article Generator, powered by :red[CrewAI]")
-st.markdown("Generate comprehensive blog posts about any topic using AI agents.")
+col1, col2, col3 = st.columns([1, 6, 1])
+with col2:
+    # Title and description
+    st.title("✍️AI Blog Article Generator, powered by :red[CrewAI]")
+    st.markdown("Generate comprehensive blog posts about any topic using AI agents.")
 
 # Sidebar
 with st.sidebar:
@@ -65,25 +56,60 @@ with st.sidebar:
         
         if openai_api_key:
             os.environ["OPENAI_API_KEY"] = openai_api_key
+            
+        serper_api_key = st.text_input(
+            "Serper API Key",
+            type = "password",
+            placeholder = "Enter your Serper API key",
+            help = "Enter your Serper API key for web search capabilities"
+            )
+        if serper_api_key:
+            os.environ["SERPER_API_KEY"] = serper_api_key
     
+    st.write("")
+    with st.expander("ℹ️ About", expanded=False):
+        st.markdown(
+            """This Blog Article Writing assistant uses advanced AI models to help you:
+                - Research any topic in depth
+                - Analyze and summarize information
+                - Provide structured article
+                
+                Choose your preferred model and enter the required API keys to get started.""")
+
+if not os.environ.get("OPENAI_API_KEY"):
+    st.warning("⚠️ Please enter your OpenAI API key in the sidebar to get started")
+    st.stop()
+
+if not os.environ.get("SERPER_API_KEY"):
+    st.warning("⚠️ Please enter your Serper API key in the sidebar to get started")
+    st.stop()
+
+# Create two columns for the input section
+input_col1, input_col2, input_col3 = st.columns([1, 6, 1])
+
+with input_col2:
     st.header("Content Settings")
     
     # Make the text input take up more space
     topic = st.text_area(
         "Enter your topic",
         height = 100,
-        placeholder = "Enter the topic you want to generate content about..."
+        placeholder = "Enter the topic you want to generate content about..."                
     )
+
+col1, col2, col3 = st.columns([1, 0.5, 1])
+with col2:
+    generate_button = st.button("🚀 Generate Article", use_container_width = False, type = "primary")    
+
+    # # Add more sidebar controls if needed
+    # st.markdown("### Advanced Settings")
+    # temperature = st.slider("Temperature", 0.0, 1.0, 0.7)
     
-    # Add more sidebar controls if needed
-    st.markdown("### Advanced Settings")
-    temperature = st.slider("Temperature", 0.0, 1.0, 0.7)
+    # # Add some spacing
+    # st.markdown("---")
     
-    # Add some spacing
-    st.markdown("---")
-    
-    # Make the generate button more prominent in the sidebar
-    generate_button = st.button("Generate Article", type="primary", use_container_width=True)
+    # # Make the generate button more prominent in the sidebar
+    # generate_button = st.button("Generate Article", type="primary", use_container_width=True)
     
 
 if generate_button:
@@ -91,19 +117,27 @@ if generate_button:
         try:
             llm = LLM(model = f"openai/{selected_model}")
             result = generate_content(llm, topic)
-            st.markdown("### Generated Article")
-            st.markdown(result)
-            
-            # Add download button
-            st.download_button(
-                label = "Download Article",
-                data = result.raw,
-                file_name = f"{topic.lower().replace(' ', '_')}_article.md",
-                mime = "text/markdown"
-            )
             
         except Exception as e:
             st.error(f"An error occurred: {str(e)}")
+            
+    st.markdown("### Generated Article")
+    st.markdown(str(result))
+            
+    # Add download button
+    st.download_button(
+        label = "Download Article",
+        data = result.raw,
+        file_name = f"{topic.lower().replace(' ', '_')}_article.md",
+        mime = "text/markdown"
+        )
+    
+# Add footer
+st.divider()
+footer_col1, footer_col2, footer_col3 = st.columns([1, 2, 1])
+with footer_col2:
+    st.caption("Made with ❤️ using [CrewAI](https://crewai.com), [Serper](https://serper.dev/) and [Streamlit](https://streamlit.io)")
+    st.caption("By Sharan Shyamsundar")
             
 # Footer
 # footer_html = """<div style='text-align: center;'>
