@@ -43,15 +43,15 @@ with st.sidebar:
     
     selected_model = st.selectbox("🤖 Select which LLM to use", model_options, key = "selected_model")
     
-    with st.expander("🔑 API Keys", expanded=True):
+    with st.expander("🔑 API Keys", expanded = True):
         
         st.info("API keys are stored temporarily in memory and cleared when you close the browser.")
         
         openai_api_key = st.text_input(
             "OpenAI API Key",
             type = "password",
-            placeholder="Enter your OpenAI API key",
-            help="Enter your OpenAI API key"
+            placeholder = "Enter your OpenAI API key",
+            help = "Enter your OpenAI API key"
         )
         
         if openai_api_key:
@@ -88,12 +88,12 @@ if not os.environ.get("SERPER_API_KEY"):
 input_col1, input_col2, input_col3 = st.columns([1, 6, 1])
 
 with input_col2:
-    st.header("Content Settings")
+    # st.header("Content Settings")
     
     # Make the text input take up more space
     topic = st.text_area(
         "Enter your topic",
-        height = 100,
+        height = 68,
         placeholder = "Enter the topic you want to generate content about..."                
     )
 
